@@ -49,6 +49,7 @@ public:
 
     void setCurrentUser(const QString &user);
 
+    QString buildDocumentPath(const QString &nodeText);
 signals:
     void log();
     void showtime(int num);

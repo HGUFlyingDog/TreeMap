@@ -279,88 +279,88 @@ void MainWindow::onTreeViewClicked(const QModelIndex &index) {
     // 其他逻辑（如打开文档）保持不变
 
 
-    // 判断是否为子节点（无子节点的节点即为子节点）
     if (!index.model()->hasChildren(index)) {
         // 获取节点文本
         QString nodeText = index.data(Qt::DisplayRole).toString();
 
-        QString exePath = QCoreApplication::applicationDirPath();
-        qDebug() << "Application directory path:" << exePath;
+        // 获取并构建文档路径
+        QString filepath = buildDocumentPath(nodeText);
 
-        // 获取目录路径
-        QDir dir(exePath);
-        dir.cdUp();//返回上级目录
-        dir.cdUp();
-        dir.cdUp();
-        QString dirPath = dir.absolutePath(); // 获取绝对路径
-
-        QString filepath = dirPath+"/info/";
-        // 根据节点文本跳转到对应页面
-        if (nodeText == "先来先服务算法") {
-            filepath += "/作业调度/";
-            show_num = 1;
-        }else if(nodeText == "短作业优先算法"){
-            filepath += "/作业调度/";
-            show_num = 2;
-        }else if(nodeText == "目录结构"){
-            filepath += "/文件管理/";
-            show_num = 3;
-        }else if(nodeText == "索引分配"){
-            filepath += "/文件管理/";
-            show_num = 4;
-        }else if(nodeText == "文件控制块"){
-            filepath += "/文件管理/";
-            show_num = 5;
-        }else if(nodeText == "SCAN算法"){
-            filepath += "/文件管理/";
-            show_num = 6;
-        }else{
-            filepath += "/进程的描述与控制/";
-            show_num = 7;
+        if (!filepath.isEmpty()) {
+            qDebug() << "Document path:" << filepath;
+            convertAndOpenInBrowser(filepath);
+        } else {
+            qWarning() << "Failed to build document path for:" << nodeText;
         }
-        filepath += nodeText + ".docx";
-
-        convertAndOpenInBrowser(filepath);
     }
 }
 
 void MainWindow::convertAndOpenInBrowser(const QString &docxPath) {
-    // 转换 Word 到 HTML（使用 LibreOffice）
+    // 首先检查文件是否存在
+    if (!QFileInfo(docxPath).exists()) {
+        qDebug() << "文件不存在：" << docxPath;
+        word_add = "";
+        ui->showText->setPlainText("");
+        QMessageBox::warning(this, "错误", "指定的Word文件不存在！");
+        return;
+    }
+
+    word_add = docxPath;
+    qDebug() << "正在处理文件：" << docxPath;
+
+    // 使用更可靠的方式查找 LibreOffice
+    QString libreOfficePath = "C:/Program Files/LibreOffice/program/soffice.exe";
+    if (!QFileInfo(libreOfficePath).exists()) {
+        QMessageBox::warning(this, "错误", "找不到LibreOffice安装！");
+        return;
+    }
+
     QProcess process;
-    process.setProgram("C:/Program Files/LibreOffice/program/soffice.exe");
+    process.setProgram(libreOfficePath);
     process.setArguments({
         "--headless",
         "--convert-to", "html",
         "--outdir", QFileInfo(docxPath).absolutePath(),
         docxPath
     });
+
+    // 启动进程并检查是否成功
     process.start();
-
-    if (!QFileInfo(docxPath).exists()) {
-        qDebug() << "文件不存在：" << docxPath;
-        word_add = "";
-        ui->showText->setPlainText("");
+    if (!process.waitForStarted()) {
+        QMessageBox::warning(this, "错误", "无法启动LibreOffice转换进程！");
         return;
-    }else {
-        qDebug()<<docxPath;
-        word_add = docxPath;
     }
 
-    if (process.waitForFinished(30000)) {
-        QString htmlPath = QFileInfo(docxPath).absolutePath() + "/" +
-                           QFileInfo(docxPath).baseName() + ".html";
-        QString content = htmlToText(htmlPath);
-        ui->showText->setPlainText(content);
-        // 调用系统浏览器打开 HTML
-        // bool success = QDesktopServices::openUrl(QUrl::fromLocalFile(htmlPath));
-        // if (!success) {
-        //     QMessageBox::warning(nullptr, "错误", "无法打开浏览器！");
-        // }
-    } else {
-        QMessageBox::warning(nullptr, "错误", "转换 Word 文件超时！");
+    // 等待完成，更长超时时间
+    if (!process.waitForFinished(60000)) {
+        QMessageBox::warning(this, "错误", "转换Word文件超时！");
+        return;
     }
 
+    // 检查退出状态
+    if (process.exitStatus() != QProcess::NormalExit || process.exitCode() != 0) {
+        QMessageBox::warning(this, "错误",
+                             QString("转换失败！错误信息：%1").arg(QString(process.readAllStandardError())));
+        return;
+    }
+
+    // 查找实际生成的HTML文件
+    QString expectedHtmlPath = QFileInfo(docxPath).absolutePath() + "/" +
+                               QFileInfo(docxPath).baseName() + ".html";
+
+    if (!QFileInfo(expectedHtmlPath).exists()) {
+        QMessageBox::warning(this, "错误", "找不到生成的HTML文件！");
+        return;
+    }
+
+    // 处理HTML内容
+    QString content = htmlToText(expectedHtmlPath);
+    ui->showText->setPlainText(content);
+
+    // 可以选择删除临时HTML文件
+    // QFile::remove(expectedHtmlPath);
 }
+
 
 void MainWindow::on_showButton_clicked()
 {
@@ -814,3 +814,52 @@ void MainWindow::onRecommendationClicked(QListWidgetItem *item) {
 //     connect(skl,&ShowKnowledge::close,this,&MainWindow::show);
 //     connect(sjf,&SJF::close,this,&MainWindow::show);
 // }
+
+// 辅助函数：构建文档路径
+QString MainWindow::buildDocumentPath(const QString &nodeText)
+{
+    // 获取应用程序目录并向上三级
+    QString exePath = QCoreApplication::applicationDirPath();
+    QDir dir(exePath);
+    for (int i = 0; i < 3; ++i) {
+        if (!dir.cdUp()) {
+            qWarning() << "Failed to cdUp from:" << dir.absolutePath();
+            return QString();
+        }
+    }
+
+    // 定义菜单项结构
+    struct MenuItem {
+        QString name;
+        QString subdir;
+        int showNum;
+    };
+
+    // 菜单项配置
+    static const QVector<MenuItem> menuItems = {
+        {"先来先服务算法", "作业调度", 1},
+        {"短作业优先算法", "作业调度", 2},
+        {"目录结构", "文件管理", 3},
+        {"索引分配", "文件管理", 4},
+        {"文件控制块", "文件管理", 5},
+        {"SCAN算法", "文件管理", 6}
+    };
+
+    // 查找匹配的菜单项
+    for (const auto &item : menuItems) {
+        if (nodeText == item.name) {
+            show_num = item.showNum;
+            return QDir::cleanPath(dir.absolutePath() +
+                                   "/info/" +
+                                   item.subdir +
+                                   "/" +
+                                   nodeText + ".docx");
+        }
+    }
+
+    // 默认情况
+    show_num = 7;
+    return QDir::cleanPath(dir.absolutePath() +
+                           "/info/进程的描述与控制/" +
+                           nodeText + ".docx");
+}
