@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+	<title></title>
+	<meta name="generator" content="LibreOffice 25.2.2.2 (Windows)"/>
+	<meta name="author" content="hao"/>
+	<meta name="created" content="2025-03-10T03:48:10"/>
+	<meta name="changedby" content="星辰"/>
+	<meta name="changed" content="2025-03-10T03:48:21"/>
+	<meta name="ICV" content="C0A66D8E77D6406591304D83D476FA73_12"/>
+	<meta name="KSOProductBuildVer" content="2052-12.1.0.20305"/>
+	<meta name="KSOTemplateDocerSaveRecord" content="eyJoZGlkIjoiM2VmNDY4ZDNlMDMxMDExYTU2OTkxZDk3Y2JkNjc5MDAiLCJ1c2VySWQiOiI4Njc4NjgxNDcifQ=="/>
+	<style type="text/css">
+		@page { size: 21.59cm 27.94cm; margin: 2.54cm }
+		p { line-height: 115%; text-align: justify; orphans: 0; widows: 0; margin-bottom: 0.25cm; direction: ltr; background: transparent }
+		p.western { font-family: "Calibri", serif; font-size: 10pt; so-language: en-US }
+		p.cjk { font-size: 10pt; so-language: zh-CN; font-family: "宋体" }
+		p.ctl { font-family: ; font-size: 12pt; so-language: ar-SA }
+	</style>
+</head>
+<body lang="zh-CN" link="#000080" vlink="#800000" dir="ltr"><p style="line-height: 100%; margin-bottom: 0cm">
+一、<font face="宋体, serif"><span lang="en-US">FCFS</span></font>调度算法概述</p>
+<p style="line-height: 100%; margin-bottom: 0cm"><font face="宋体, serif"><span lang="en-US">**</span></font>先来先服务（<font face="宋体, serif"><span lang="en-US">First-Come,
+First-Served</span></font>，<font face="宋体, serif"><span lang="en-US">FCFS</span></font>）<font face="宋体, serif"><span lang="en-US">**</span></font>调度算法是操作系统中最简单、最基本的进程调度算法之一。它按照进程到达就绪队列的先后顺序来调度进程，即先到达的进程先被分配<font face="宋体, serif"><span lang="en-US">CPU</span></font>资源进行执行。</p>
+<p style="line-height: 100%; margin-bottom: 0cm"><br/>
+
+</p>
+<p style="line-height: 100%; margin-bottom: 0cm"><font face="宋体, serif"><span lang="en-US">1.
+</span></font>工作机制</p>
+<p style="line-height: 100%; margin-bottom: 0cm">队列结构：<font face="宋体, serif"><span lang="en-US">FCFS</span></font>算法通常使用<font face="宋体, serif"><span lang="en-US">**</span></font>先进先出（<font face="宋体, serif"><span lang="en-US">FIFO</span></font>）<font face="宋体, serif"><span lang="en-US">**</span></font>队列来管理就绪进程。</p>
+<p style="line-height: 100%; margin-bottom: 0cm">调度策略：当<font face="宋体, serif"><span lang="en-US">CPU</span></font>空闲时，从就绪队列的头部取出第一个进程，将其分配给<font face="宋体, serif"><span lang="en-US">CPU</span></font>执行，直到该进程完成或发生阻塞。</p>
+<p style="line-height: 100%; margin-bottom: 0cm">不可抢占：一旦进程获得<font face="宋体, serif"><span lang="en-US">CPU</span></font>控制权，除非其主动释放（完成或阻塞），否则不会被其他进程抢占。</p>
+<p style="line-height: 100%; margin-bottom: 0cm"><font face="宋体, serif"><span lang="en-US">2.
+</span></font>特点</p>
+<p style="line-height: 100%; margin-bottom: 0cm">简单易实现：算法逻辑简单，易于理解和实现。</p>
+<p style="line-height: 100%; margin-bottom: 0cm">公平性：所有进程按照到达顺序被调度，没有优先级差别。</p>
+<p style="line-height: 100%; margin-bottom: 0cm">等待时间可能较长：短进程可能需要等待前面的长进程完成，导致平均等待时间增加。</p>
+<p style="line-height: 100%; margin-bottom: 0cm">二、<font face="宋体, serif"><span lang="en-US">FCFS</span></font>算法的优缺点</p>
+<p style="line-height: 100%; margin-bottom: 0cm"><font face="宋体, serif"><span lang="en-US">1.
+</span></font>优点</p>
+<p style="line-height: 100%; margin-bottom: 0cm">实现简单：无需复杂的数据结构和调度逻辑。</p>
+<p style="line-height: 100%; margin-bottom: 0cm">无饥饿现象：所有进程都会被执行，避免了长时间得不到调度的问题。</p>
+<p style="line-height: 100%; margin-bottom: 0cm">适用于批处理系统：在需要顺序执行任务的场景下表现良好。</p>
+<p style="line-height: 100%; margin-bottom: 0cm"><font face="宋体, serif"><span lang="en-US">2.
+</span></font>缺点</p>
+<p style="line-height: 100%; margin-bottom: 0cm">平均等待时间长：短进程可能等待长进程完成后才能执行，导致响应时间增加。</p>
+<p style="line-height: 100%; margin-bottom: 0cm">缺乏灵活性：无法根据进程的重要性或紧急程度调整调度顺序。</p>
+<p style="line-height: 100%; margin-bottom: 0cm">不适合交互式系统：在需要快速响应的系统中，<font face="宋体, serif"><span lang="en-US">FCFS</span></font>算法的性能较差。</p>
+<p style="line-height: 100%; margin-bottom: 0cm"><br/>
+
+</p>
+<p style="line-height: 100%; margin-bottom: 0cm"><br/>
+
+</p>
+<p class="cjk" style="margin-bottom: 0cm; line-height: 100%"><a name="_GoBack"></a>
+<img src="%E5%85%88%E6%9D%A5%E5%85%88%E6%9C%8D%E5%8A%A1%E7%AE%97%E6%B3%95_html_47a07db3.jpg" name="图片 1" align="bottom" width="576" height="360" border="0"/>
+</p>
+</body>
+</html>

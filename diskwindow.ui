@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+  <class>DiskWindow</class>
+  <widget class="QWidget" name="DiskWindow">
+    <property name="geometry">
+      <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>800</width>
+        <height>600</height>
+      </rect>
+    </property>
+    <property name="windowTitle">
+      <string>SCAN磁盘调度演示</string>
+    </property>
+    <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+        <widget class="QGraphicsView" name="graphicsView">
+          <property name="minimumSize">
+            <size>
+              <width>600</width>
+              <height>300</height>
+            </size>
+          </property>
+        </widget>
+      </item>
+      <item>
+        <widget class="QGroupBox" name="controlGroup">
+          <property name="title">
+            <string>控制面板</string>
+          </property>
+          <layout class="QHBoxLayout" name="horizontalLayout">
+            <item>
+              <widget class="QLineEdit" name="trackInput">
+                <property name="placeholderText">
+                  <string>输入磁道号（逗号分隔，如：5,200,75）</string>
+                </property>
+              </widget>
+            </item>
+            <item>
+              <widget class="QPushButton" name="addBtn">
+                <property name="text">
+                  <string>添加请求</string>
+                </property>
+              </widget>
+            </item>
+            <item>
+              <widget class="QPushButton" name="startBtn">
+                <property name="text">
+                  <string>开始扫描</string>
+                </property>
+              </widget>
+            </item>
+            <item>
+              <widget class="QLabel" name="directionLabel">
+                <property name="text">
+                  <string>初始方向:</string>
+                </property>
+              </widget>
+            </item>
+            <item>
+              <widget class="QComboBox" name="directionCombo">
+                <item>
+                  <property name="text">
+                    <string>向高磁道</string>
+                  </property>
+                </item>
+                <item>
+                  <property name="text">
+                    <string>向低磁道</string>
+                  </property>
+                </item>
+              </widget>
+            </item>
+          </layout>
+        </widget>
+      </item>
+      <item>
+        <widget class="QTextBrowser" name="logOutput"/>
+      </item>
+    </layout>
+  </widget>
+  <resources/>
+  <connections/>
+</ui>
