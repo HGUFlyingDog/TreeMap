@@ -123,6 +123,7 @@ MainWindow::MainWindow(QWidget *parent)
             updateRecommendations();
         } else {
             showPlaceholderRecommendation();
+
         }
     });
 }
@@ -393,9 +394,24 @@ void MainWindow::show_which_know(int num)
 void MainWindow::readOSJsonFile(const QString &filePath)
 {
     QFile file(filePath);
-    qDebug()<<file.fileName();
-    if(!file.open(QIODevice::ReadOnly|QIODevice::Text)){
-        QMessageBox::warning(this,"警告","JSON文件无法打开");
+    qDebug() << "Attempting to open:" << file.fileName();
+
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        // 警告框：文件打开失败
+        QMessageBox::warning(this,
+                             "文件打开失败",
+                             QString("无法打开 JSON 文件：\n%1").arg(filePath));
+
+        // 提供详细解决方案
+        QMessageBox::information(this,
+                                 "文件位置说明",
+                                 QString("请确保 JSON 文件位于以下路径：\n\n"
+                                         "%1\n\n"
+                                         "并检查：\n"
+                                         "1. 文件是否存在\n"
+                                         "2. 文件是否被其他程序占用\n"
+                                         "3. 应用程序是否有读取权限")
+                                     .arg(filePath));
         return;
     }
 

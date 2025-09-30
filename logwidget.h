@@ -12,6 +12,8 @@
 #include "enroll.h"
 #include "mainwindow.h"
 
+#include <QTimer>
+
 namespace Ui {
 class LogWidget;
 }

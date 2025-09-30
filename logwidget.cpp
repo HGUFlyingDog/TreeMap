@@ -39,6 +39,13 @@ LogWidget::LogWidget(QWidget *parent)
 
     login_db.close();//关闭数据库
 
+
+    QTimer::singleShot(10, this, [this]()
+                       {
+    QMessageBox::information(this,"提示","尊贵的VIP用户，已为您自动登录");
+    btn_log_clicked();
+    });
+
     //this->show();
 }
 
@@ -56,19 +63,25 @@ void LogWidget::btn_log_clicked()
     qDebug()<<username<<" "<<password<<"\n";
 
 
-    if(password == query_sql(username)){
-        //发送登录信号
-        //emit(login(username));
-        // emit(login());
-        //登陆完直接关闭窗口
-        emit(close_window());
-        emit(log_stu(username));
-        mwd = new MainWindow;
-        mwd->show();
-        mwd->setCurrentUser(username);
-    }else{
-        QMessageBox::warning(this,"警告","账号密码不匹配！");
-    }
+    emit(close_window());
+    emit(log_stu(username));
+    mwd = new MainWindow;
+    mwd->show();
+    mwd->setCurrentUser(username);
+
+    // if(password == query_sql(username)){
+    //     //发送登录信号
+    //     //emit(login(username));
+    //     // emit(login());
+    //     //登陆完直接关闭窗口
+    //     emit(close_window());
+    //     emit(log_stu(username));
+    //     mwd = new MainWindow;
+    //     mwd->show();
+    //     mwd->setCurrentUser(username);
+    // }else{
+    //     QMessageBox::warning(this,"警告","账号密码不匹配！");
+    // }
 }
 
 void LogWidget::cancel_clicked()
